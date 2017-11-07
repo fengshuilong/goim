@@ -87,6 +87,10 @@ type Config struct {
 	// monitor
 	MonitorOpen  bool     `goconf:"monitor:open"`
 	MonitorAddrs []string `goconf:"monitor:addrs:,"`
+
+	RegistryAddrs    []string `goconf:"registry:addrs:,"`
+	RegistryTTL      int      `goconf:"registry:ttl"`
+	RegistryInterval int      `goconf:"registry:interval"`
 }
 
 func NewConfig() *Config {
@@ -131,6 +135,10 @@ func NewConfig() *Config {
 		BucketChannel: 1024,
 		// push
 		RPCPushAddrs: []string{"localhost:8083"},
+		// registry
+		RegistryAddrs:    []string{"localhost:2379"},
+		RegistryTTL:      30,
+		RegistryInterval: 15,
 	}
 }
 

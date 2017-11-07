@@ -97,7 +97,9 @@ func main() {
 	}
 
 	r, err := InitRegistory(RegistoryOptions{
-		Addrs: "",
+		Addrs:    Conf.RegistryAddrs,
+		TTL:      Conf.RegistryTTL,
+		Interval: Conf.RegistryInterval,
 	})
 
 	if err != nil {
