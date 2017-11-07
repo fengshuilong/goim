@@ -78,3 +78,22 @@ func (r *Room) Close() {
 	}
 	r.rLock.RUnlock()
 }
+
+// RoomIdSorter RoomIdSorter
+type RoomIdSorter []int32
+
+// Len is the number of elements in the collection.
+func (r RoomIdSorter) Len() int {
+	return len(r)
+}
+
+// Less reports whether the element with
+// index i should sort before the element with index j.
+func (r RoomIdSorter) Less(i, j int) bool {
+	return i < j
+}
+
+// Swap swaps the elements with indexes i and j.
+func (r RoomIdSorter) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
+}

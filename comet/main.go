@@ -95,6 +95,22 @@ func main() {
 	if err := InitRPCPush(Conf.RPCPushAddrs); err != nil {
 		panic(err)
 	}
+
+	r, err := InitRegistory(RegistoryOptions{
+		Addrs: "",
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = r.StartAndLoop()
+	if err != nil {
+		panic(err)
+	}
+
 	// block until a signal is received.
 	InitSignal()
+
+	r.Stop()
 }
