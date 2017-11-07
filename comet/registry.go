@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"goim/libs/addr"
 	inet "goim/libs/net"
+	"goim/libs/net/addr"
 	"goim/libs/registry"
+	"goim/libs/registry/etcdv3"
 	"net"
 	"sort"
 	"time"
@@ -48,7 +49,7 @@ func InitRegistory(addrs []string, ttl, interval int) error {
 	}
 
 	discovery = &Discovery{}
-	r, err := registry.NewEtcdv3Registry(registry.Addrs(addrs...))
+	r, err := etcdv3.NewRegistry(registry.Addrs(addrs...))
 	if err != nil {
 		return err
 	}
@@ -157,14 +158,15 @@ func rpcServers() (*registry.Service, error) {
 	}
 
 	// rooms
-	rooms := ServerRoomIds()
+	rooms := DefaultServer.RoomIds()
 
-	rids := make(RoomIdSorter, 0, len(rooms))
+	// rids := make(RoomIdSorter, 0, len(rooms))
 
-	for rid := range rooms {
-		rids = append(rids, rid)
-	}
+	// for rid := range rooms {
+	// 	rids = append(rids, rid)
+	// }
 
+	sort.Ints(rooms)
 	sort.Sort(rids)
 
 	roomsJSON, err := json.Marshal(rids)

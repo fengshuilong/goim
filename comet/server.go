@@ -49,3 +49,24 @@ func (server *Server) Bucket(subKey string) *Bucket {
 	}
 	return server.Buckets[idx]
 }
+
+func (server *Server) RoomIds() []int32 {
+	var (
+		roomId  int32
+		bucket  *Bucket
+		roomIds = make(map[int32]struct{})
+	)
+	for _, bucket = range server.Buckets {
+		for roomId, _ = range bucket.Rooms() {
+			roomIds[roomId] = struct{}{}
+		}
+	}
+
+	ids := make([]int32, 0, len(roomIds))
+
+	for id := range roomIds {
+		ids = append(ids, id)
+	}
+
+	return ids
+}

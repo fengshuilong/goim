@@ -1,8 +1,10 @@
-package registry
+package etcdv3
 
 import (
 	"errors"
 	"time"
+
+	"goim/libs/registry"
 
 	"github.com/coreos/etcd/clientv3"
 	"golang.org/x/net/context"
@@ -15,7 +17,7 @@ type etcdv3Watcher struct {
 	timeout time.Duration
 }
 
-func newEtcdv3Watcher(r *etcdv3Registry, timeout time.Duration) (Watcher, error) {
+func newEtcdv3Watcher(r *etcdv3Registry, timeout time.Duration) (registry.Watcher, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	stop := make(chan bool, 1)
 
@@ -32,13 +34,13 @@ func newEtcdv3Watcher(r *etcdv3Registry, timeout time.Duration) (Watcher, error)
 	}, nil
 }
 
-func (ew *etcdv3Watcher) Next() (*Result, error) {
+func (ew *etcdv3Watcher) Next() (*registry.Result, error) {
 	for wresp := range ew.w {
 		if wresp.Err() != nil {
 			return nil, wresp.Err()
 		}
 		for _, ev := range wresp.Events {
-			service := jsonDecode(ev.Kv.Value)
+			service := decode(ev.Kv.Value)
 			var action string
 
 			switch ev.Type {
@@ -52,13 +54,13 @@ func (ew *etcdv3Watcher) Next() (*Result, error) {
 				action = "delete"
 
 				// get service from prevKv
-				service = jsonDecode(ev.PrevKv.Value)
+				service = decode(ev.PrevKv.Value)
 			}
 
 			if service == nil {
 				continue
 			}
-			return &Result{
+			return &registry.Result{
 				Action:  action,
 				Service: service,
 			}, nil
