@@ -7,12 +7,21 @@
   </head>
   <body>
     <h1>client demo</h1>
+    <!-- <script src="firebug-lite.js"></script> -->
+
+    <script src="swfobject.js"></script>
+    <script src="web_socket.js"></script>
+    <script>
+      // Let the library know where WebSocketMain.swf is:
+      WEB_SOCKET_SWF_LOCATION = "WebSocketMain.swf";
+    </script>
     <script src="client.js"></script>
     <script>
       var client = new MyClient({
         notify: function(data) {
-          alert(data);
-        }
+          alert(data)
+        },
+        wsUrl:'ws://10.211.55.2:8091/sub',
       });
     </script>
   </body>

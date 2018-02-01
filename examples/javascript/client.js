@@ -3,7 +3,10 @@
         var MAX_CONNECT_TIME = 10;
         var DELAY = 15000;
         this.options = options || {};
+        this.wsUrl = this.options.wsUrl || 'ws://localhost:8091/sub'; 
+        this.flashUrl = this.options.Url || 'ws://localhost:10081/'; 
         this.createConnect(MAX_CONNECT_TIME, DELAY);
+       
     }
 
     Client.prototype.createConnect = function(max, delay) {
@@ -16,10 +19,16 @@
         var heartbeatInterval;
 
         function connect() {
-            var ws = new WebSocket('ws://localhost:8090/sub');
+            var url = self.wsUrl;
+            // if (win.WEB_SOCKET_FORCE_FLASH) {
+            //     url = self.flashUrl;
+            // }
+
+            var ws = new WebSocket(url);
             var auth = false;
 
             ws.onopen = function() {
+                log('onopen');
                 getAuth();
             }
 
@@ -43,6 +52,7 @@
             }
 
             ws.onclose = function() {
+                log("close");
                 if (heartbeatInterval) clearInterval(heartbeatInterval);
                 setTimeout(reConnect, delay);
             }
@@ -54,6 +64,7 @@
                     'seq': 2,
                     'body': {}
                 }));
+                
             }
 
             function getAuth() {
@@ -67,6 +78,14 @@
                 }));
             }
 
+        }
+
+        function log(msg){
+            // if (win.WEB_SOCKET_FORCE_FLASH) {
+                alert(msg);
+            //     return;
+            // } 
+            // console.log(msg);
         }
 
         function reConnect() {
